@@ -175,9 +175,19 @@ export async function extractPinterestVideo(targetUrl: string): Promise<Extracte
     // C. Search direct pinimg video URL keywords
     const allUrls = findAllVideoUrls(data);
     allUrls.forEach(url => {
-      if (url.endsWith('.mp4') && !videoUrl) {
-        videoUrl = url;
-        resolutionsMap.set('default', { quality: 'default', url });
+      if (url.endsWith('.mp4')) {
+        let quality = 'default';
+        if (url.includes('_720w')) quality = '720p';
+        else if (url.includes('_1080w')) quality = '1080p';
+        else if (url.includes('_480w')) quality = '480p';
+        else if (url.includes('_360w')) quality = '360p';
+        
+        resolutionsMap.set(quality, { quality, url });
+        
+        // Prioritize direct MP4 links over HLS stream files
+        if (!videoUrl || videoUrl.endsWith('.m3u8') || (quality.includes('720') && !videoUrl.includes('1080'))) {
+          videoUrl = url;
+        }
       } else if (url.endsWith('.m3u8') && !resolutionsMap.has('hls')) {
         resolutionsMap.set('hls', { quality: 'hls', url });
         if (!videoUrl) videoUrl = url;

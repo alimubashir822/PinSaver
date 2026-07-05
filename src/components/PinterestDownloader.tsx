@@ -230,6 +230,21 @@ export default function PinterestDownloader() {
                 />
               )}
             </div>
+
+            {/* Instant Download Button */}
+            <button
+              onClick={() => {
+                if (media.videoUrl.endsWith('.m3u8')) {
+                  alert('This format is an HLS playlist (.m3u8) used for adaptive streaming. To download the actual video file, please select an MP4 format from the Available Formats list.');
+                  return;
+                }
+                triggerVideoDownload(media.videoUrl, media.title);
+              }}
+              className="w-full bg-primary hover:bg-primary-hover text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg shadow-primary/25"
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              {media.mediaType === 'image' ? 'Download Original Image' : 'Download Video (MP4)'}
+            </button>
           </div>
 
           {/* Right Column: Metadata & Format Links */}
@@ -310,7 +325,7 @@ export default function PinterestDownloader() {
                       className="bg-primary hover:bg-primary-hover text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm shadow-primary/20"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      Get Link
+                      Download
                     </button>
                   </div>
                 ))}

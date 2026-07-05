@@ -386,12 +386,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Helper to trigger direct downloads via the proxy route
   const triggerVideoDownload = (url: string, title: string) => {
     const downloadUrl = `/api/download?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = `${title.replace(/\s+/g, '_')}.mp4`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    window.location.href = downloadUrl;
   };
 
   const processQueue = async () => {
