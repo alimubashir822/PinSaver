@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  downloads   Download[]
+  favorites   Favorite[]
+  collections Collection[]
+}
+
+model Download {
+  id           String      @id @default(uuid())
+  userId       String?
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pinterestUrl String
+  title        String
+  thumbnail    String
+  videoUrl     String
+  downloadedAt DateTime    @default(now())
+  collectionId String?
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+}
+
+model Favorite {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pinterestUrl String
+  title        String
+  thumbnail    String
+  videoUrl     String
+  createdAt    DateTime @default(now())
+}
+
+model Collection {
+  id        String     @id @default(uuid())
+  name      String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  downloads Download[]
+  createdAt DateTime   @default(now())
+  
+  @@unique([name, userId])
+}
